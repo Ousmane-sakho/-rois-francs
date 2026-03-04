@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🏰 Les Rois Francs - Révise avec Moi !</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+  :root {
+    --gold: #f4c430; --dark-gold: #c8960c; --red: #c0392b; --dark-red: #922b21;
+    --blue: #2471a3; --light-blue: #d6eaf8; --green: #1e8449; --light-green: #d5f5e3;
+    --purple: #7d3c98; --bg: #fdf6e3; --text: #2c1810; --card-bg: #fff9ee; --border: #d4a843;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+  header { background: linear-gradient(135deg, #1a0a00 0%, #3d1a00 40%, #6b3010 100%); padding: 20px; text-align: center; border-bottom: 5px solid var(--gold); }
+  .castle-banner { font-size: 2.5em; letter-spacing: 3px; color: var(--gold); text-shadow: 2px 2px 8px rgba(0,0,0,0.5); font-weight: 900; }
+  .subtitle { color: #f0d080; font-size: 1em; margin-top: 6px; font-weight: 600; }
+  nav { display: flex; justify-content: center; gap: 12px; padding: 14px; background: linear-gradient(180deg, #2c1810, #1a0a00); flex-wrap: wrap; }
+  .nav-btn { padding: 10px 26px; border: 3px solid var(--gold); border-radius: 50px; font-size: 1em; font-weight: 800; cursor: pointer; transition: all 0.25s; font-family: 'Nunito', sans-serif; background: transparent; color: var(--gold); }
+  .nav-btn:hover, .nav-btn.active { background: var(--gold); color: #2c1810; transform: scale(1.07); box-shadow: 0 4px 20px rgba(244,196,48,0.5); }
+  .page { display: none; } .page.active { display: block; }
+  .home-container { max-width: 900px; margin: 40px auto; padding: 20px; text-align: center; }
+  .hero-emoji { font-size: 5em; margin: 10px 0; animation: float 3s ease-in-out infinite; }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-15px)} }
+  .hero-title { font-size: 2em; font-weight: 900; color: var(--dark-red); margin: 10px 0; }
+  .hero-desc { font-size: 1.1em; color: #5a3010; max-width: 600px; margin: 0 auto 30px; line-height: 1.6; }
+  .home-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-top: 20px; }
+  .home-card { background: var(--card-bg); border: 3px solid var(--border); border-radius: 20px; padding: 28px 20px; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+  .home-card:hover { transform: translateY(-8px); box-shadow: 0 10px 30px rgba(0,0,0,0.2); border-color: var(--dark-gold); }
+  .home-card .icon { font-size: 3.5em; margin-bottom: 12px; } .home-card h3 { font-size: 1.4em; font-weight: 900; color: var(--dark-red); margin-bottom: 8px; } .home-card p { color: #6b4020; font-size: 0.95em; line-height: 1.5; }
+  .frise { margin-top: 35px; background: linear-gradient(135deg,#2c1810,#5a2010); border-radius: 20px; padding: 22px; color: var(--gold); }
+  .frise h3 { font-size: 1.4em; font-weight: 900; margin-bottom: 14px; }
+  .frise-items { display: flex; justify-content: space-around; flex-wrap: wrap; gap: 12px; font-size: 0.9em; }
+  .frise-item { text-align: center; } .frise-item .fi-emoji { font-size: 1.8em; } .frise-item .fi-date { font-weight: 900; font-size: 1em; } .frise-item .fi-label { color: #f0d080; font-size: 0.85em; }
+  .cours-container { max-width: 960px; margin: 30px auto; padding: 0 20px 40px; }
+  .section-title { text-align: center; font-size: 1.8em; font-weight: 900; color: var(--dark-red); margin-bottom: 28px; padding: 14px; background: linear-gradient(135deg,#fdf0e0,#fae8c8); border-radius: 15px; border: 3px solid var(--gold); }
+  .chapter { background: var(--card-bg); border: 3px solid var(--border); border-radius: 20px; margin-bottom: 24px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+  .chapter-header { padding: 16px 22px; cursor: pointer; display: flex; align-items: center; gap: 14px; transition: background 0.2s; user-select: none; }
+  .chapter-header:hover { background: #f0e8d8; }
+  .chapter-icon { font-size: 2em; flex-shrink: 0; } .chapter-header-text h2 { font-size: 1.15em; font-weight: 900; color: var(--dark-red); } .chapter-header-text p { font-size: 0.85em; color: #7a5030; margin-top: 2px; }
+  .chapter-arrow { margin-left: auto; font-size: 1.2em; color: var(--dark-gold); transition: transform 0.3s; flex-shrink: 0; }
+  .chapter.open .chapter-arrow { transform: rotate(180deg); }
+  .chapter-body { display: none; padding: 0 22px 22px; border-top: 2px solid var(--border); animation: slideDown 0.3s ease; }
+  @keyframes slideDown { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }
+  .chapter.open .chapter-body { display: block; }
+  .chapter-body p { line-height: 1.7; color: #3a2010; margin: 12px 0; font-size: 0.98em; }
+  .fact-box { background: linear-gradient(135deg,#fff3cd,#fde8a0); border-left: 6px solid var(--gold); border-radius: 12px; padding: 14px 18px; margin: 14px 0; }
+  .fact-box .fact-title { font-weight: 900; color: #7a4a00; font-size: 0.98em; margin-bottom: 5px; } .fact-box p { color: #5a3a00; margin: 0; font-size: 0.9em; }
+  .key-word { background: var(--gold); color: #2c1810; font-weight: 800; padding: 1px 8px; border-radius: 6px; font-size: 0.93em; }
+  .person-card { display: flex; align-items: flex-start; gap: 14px; background: linear-gradient(135deg,#fdf0ff,#f0e0ff); border: 2px solid #c090e0; border-radius: 16px; padding: 14px; margin: 14px 0; }
+  .person-emoji { font-size: 2.8em; flex-shrink: 0; } .person-info h4 { font-size: 1.05em; font-weight: 900; color: var(--purple); margin-bottom: 4px; } .person-info p { font-size: 0.88em; color: #4a3060; line-height: 1.5; }
+  .king-badge { display: inline-block; background: var(--dark-red); color: white; font-size: 0.75em; font-weight: 800; padding: 2px 10px; border-radius: 20px; margin-bottom: 5px; }
+  .vocab-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(190px,1fr)); gap: 12px; margin: 14px 0; }
+  .vocab-item { background: var(--light-blue); border: 2px solid var(--blue); border-radius: 12px; padding: 12px; }
+  .vocab-item .word { font-weight: 900; color: var(--blue); font-size: 0.92em; } .vocab-item .def { font-size: 0.83em; color: #1a3a5a; margin-top: 4px; line-height: 1.4; }
+  .memo-banner { background: linear-gradient(135deg,#2c1810,#5a2010); color: var(--gold); border-radius: 16px; padding: 18px 22px; margin: 22px 0 0; text-align: center; }
+  .memo-banner h3 { font-size: 1.2em; font-weight: 900; margin-bottom: 12px; }
+  .memo-items { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+  .memo-item { background: rgba(244,196,48,0.15); border: 2px solid var(--gold); border-radius: 12px; padding: 7px 14px; font-size: 0.88em; font-weight: 700; color: #fde98a; }
+  .quiz-container { max-width: 760px; margin: 30px auto; padding: 0 20px 40px; }
+  .quiz-intro { text-align: center; background: var(--card-bg); border: 3px solid var(--border); border-radius: 20px; padding: 28px; margin-bottom: 28px; }
+  .quiz-intro h2 { font-size: 1.7em; font-weight: 900; color: var(--dark-red); margin-bottom: 10px; } .quiz-intro p { color: #5a3010; font-size: 1em; margin-bottom: 20px; }
+  .difficulty-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .diff-btn { padding: 10px 22px; border: 3px solid; border-radius: 50px; font-size: 0.98em; font-weight: 800; cursor: pointer; transition: all 0.25s; font-family: 'Nunito',sans-serif; background: transparent; }
+  .diff-btn.easy { border-color: var(--green); color: var(--green); } .diff-btn.medium { border-color: var(--blue); color: var(--blue); } .diff-btn.hard { border-color: var(--red); color: var(--red); }
+  .diff-btn.easy.selected, .diff-btn.easy:hover { background: var(--green); color: white; } .diff-btn.medium.selected, .diff-btn.medium:hover { background: var(--blue); color: white; } .diff-btn.hard.selected, .diff-btn.hard:hover { background: var(--red); color: white; }
+  .start-quiz-btn { display: block; margin: 20px auto 0; padding: 13px 38px; background: linear-gradient(135deg,var(--gold),var(--dark-gold)); color: #2c1810; border: none; border-radius: 50px; font-size: 1.15em; font-weight: 900; cursor: pointer; transition: all 0.25s; font-family: 'Nunito',sans-serif; box-shadow: 0 4px 15px rgba(200,150,12,0.4); }
+  .start-quiz-btn:hover { transform: scale(1.07); box-shadow: 0 6px 25px rgba(200,150,12,0.6); }
+  #quiz-game { display: none; }
+  .quiz-progress { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+  .progress-bar-bg { flex: 1; height: 14px; background: #e0d0b0; border-radius: 10px; overflow: hidden; border: 2px solid var(--border); }
+  .progress-bar-fill { height: 100%; background: linear-gradient(90deg,var(--gold),var(--dark-gold)); border-radius: 10px; transition: width 0.5s ease; }
+  .progress-text { font-weight: 800; color: #6b3010; font-size: 0.92em; white-space: nowrap; } .score-badge { background: linear-gradient(135deg,var(--gold),var(--dark-gold)); color: #2c1810; font-weight: 900; padding: 5px 14px; border-radius: 20px; font-size: 0.95em; white-space: nowrap; }
+  .question-card { background: var(--card-bg); border: 3px solid var(--border); border-radius: 22px; padding: 28px; margin-bottom: 22px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+  .q-number { font-size: 0.83em; font-weight: 800; color: white; background: var(--dark-red); display: inline-block; padding: 3px 12px; border-radius: 20px; margin-bottom: 10px; }
+  .q-emoji { font-size: 2.2em; display: block; margin-bottom: 8px; } .q-text { font-size: 1.2em; font-weight: 800; color: #2c1810; line-height: 1.5; margin-bottom: 20px; }
+  .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+  @media(max-width:500px){.options-grid{grid-template-columns:1fr}}
+  .option-btn { padding: 13px 16px; border: 3px solid var(--border); border-radius: 14px; font-size: 0.97em; font-weight: 700; cursor: pointer; transition: all 0.2s; font-family: 'Nunito',sans-serif; background: white; color: var(--text); text-align: left; display: flex; align-items: center; gap: 10px; }
+  .option-btn:hover:not(:disabled) { border-color: var(--blue); background: var(--light-blue); transform: translateX(4px); }
+  .option-btn.correct { background: var(--light-green)!important; border-color: var(--green)!important; color: #1a5c30!important; transform: scale(1.02); }
+  .option-btn.wrong { background: #fde8e8!important; border-color: var(--red)!important; color: var(--dark-red)!important; }
+  .option-btn:disabled { cursor: default; }
+  .option-letter { width: 26px; height: 26px; border-radius: 50%; background: var(--border); color: #2c1810; font-weight: 900; font-size: 0.83em; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .feedback-box { display: none; margin-top: 16px; padding: 14px 18px; border-radius: 14px; font-size: 0.97em; font-weight: 700; line-height: 1.5; animation: popIn 0.3s ease; }
+  @keyframes popIn { 0%{transform:scale(0.8);opacity:0} 100%{transform:scale(1);opacity:1} }
+  .correct-fb { background: var(--light-green); border: 3px solid var(--green); color: #1a5c30; } .wrong-fb { background: #fde8e8; border: 3px solid var(--red); color: var(--dark-red); }
+  .next-btn { display: none; margin: 16px auto 0; padding: 12px 34px; background: linear-gradient(135deg,#2471a3,#1a5276); color: white; border: none; border-radius: 50px; font-size: 1.05em; font-weight: 900; cursor: pointer; font-family: 'Nunito',sans-serif; transition: all 0.25s; box-shadow: 0 4px 12px rgba(36,113,163,0.4); }
+  .next-btn:hover { transform: scale(1.05); }
+  #quiz-results { display: none; }
+  .results-card { background: var(--card-bg); border: 3px solid var(--border); border-radius: 24px; padding: 38px 28px; text-align: center; box-shadow: 0 8px 30px rgba(0,0,0,0.12); }
+  .results-emoji { font-size: 4em; animation: bounce 0.8s ease infinite alternate; }
+  @keyframes bounce { from{transform:translateY(0)} to{transform:translateY(-12px)} }
+  .results-title { font-size: 1.9em; font-weight: 900; color: var(--dark-red); margin: 14px 0 8px; } .results-score { font-size: 3em; font-weight: 900; color: var(--dark-gold); margin: 8px 0; } .results-msg { font-size: 1.05em; color: #5a3010; margin-bottom: 22px; line-height: 1.6; } .stars-display { font-size: 2.5em; margin: 8px 0 18px; }
+  .retry-btn, .home-btn { padding: 12px 28px; border-radius: 50px; font-size: 1.05em; font-weight: 900; cursor: pointer; font-family: 'Nunito',sans-serif; transition: all 0.25s; margin: 7px; border: none; }
+  .retry-btn { background: linear-gradient(135deg,var(--gold),var(--dark-gold)); color: #2c1810; } .home-btn { background: linear-gradient(135deg,#2c1810,#5a2010); color: var(--gold); }
+  .retry-btn:hover, .home-btn:hover { transform: scale(1.07); }
+  .confetti-container { position: fixed; top:0; left:0; right:0; bottom:0; pointer-events:none; z-index:999; overflow:hidden; }
+  .confetti-piece { position: absolute; width:13px; height:13px; top:-20px; animation: confettiFall linear forwards; border-radius:3px; }
+  @keyframes confettiFall { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(720deg);opacity:0} }
+  footer { text-align:center; padding:18px; background:#2c1810; color:#c09060; font-size:0.88em; font-weight:600; border-top:3px solid var(--gold); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="castle-banner">🏰 Les Rois Francs 👑</div>
+  <div class="subtitle">Mérovingiens &amp; Carolingiens — CM1</div>
+  <div style="font-size:1.3em;margin-top:6px">⚔️ 🛡️ 📜 🗡️ ⚜️</div>
+</header>
+
+<nav>
+  <button class="nav-btn active" onclick="showPage('home')">🏠 Accueil</button>
+  <button class="nav-btn" onclick="showPage('cours')">📖 Le Cours</button>
+  <button class="nav-btn" onclick="showPage('quiz')">🎯 Le Quiz</button>
+</nav>
+
+<div id="page-home" class="page active">
+  <div class="home-container">
+    <div class="hero-emoji">🏰</div>
+    <div class="hero-title">Salut, futur historien ! 👋</div>
+    <p class="hero-desc">Bienvenue dans ta salle de révision magique ! Ici tu vas tout apprendre sur les rois Mérovingiens et Carolingiens — ces rois qui ont régné sur la France il y a plus de 1 000 ans ! 🗡️</p>
+    <div class="home-cards">
+      <div class="home-card" onclick="showPage('cours')">
+        <div class="icon">📖</div>
+        <h3>Le Cours</h3>
+        <p>Découvre les dynasties, les grands rois, les batailles et les dates avec des fiches super colorées !</p>
+      </div>
+      <div class="home-card" onclick="showPage('quiz')">
+        <div class="icon">🎯</div>
+        <h3>Le Quiz</h3>
+        <p>Teste tes connaissances, gagne des étoiles 🌟 et deviens champion(ne) d'histoire !</p>
+      </div>
+    </div>
+    <div class="frise">
+      <h3>⏳ La Grande Frise du Temps</h3>
+      <div class="frise-items">
+        <div class="frise-item"><div class="fi-emoji">👑</div><div class="fi-date">481</div><div class="fi-label">Clovis, 1er roi</div></div>
+        <div style="align-self:center;color:var(--gold);font-size:1.3em">→</div>
+        <div class="frise-item"><div class="fi-emoji">⛪</div><div class="fi-date">496</div><div class="fi-label">Baptême de Clovis</div></div>
+        <div style="align-self:center;color:var(--gold);font-size:1.3em">→</div>
+        <div class="frise-item"><div class="fi-emoji">⚔️</div><div class="fi-date">732</div><div class="fi-label">Bataille de Poitiers</div></div>
+        <div style="align-self:center;color:var(--gold);font-size:1.3em">→</div>
+        <div class="frise-item"><div class="fi-emoji">🔱</div><div class="fi-date">751</div><div class="fi-label">Pépin le Bref, roi</div></div>
+        <div style="align-self:center;color:var(--gold);font-size:1.3em">→</div>
+        <div class="frise-item"><div class="fi-emoji">🌟</div><div class="fi-date">800</div><div class="fi-label">Charlemagne Empereur</div></div>
+        <div style="align-self:center;color:var(--gold);font-size:1.3em">→</div>
+        <div class="frise-item"><div class="fi-emoji">📜</div><div class="fi-date">843</div><div class="fi-label">Traité de Verdun</div></div>
+        <div style="align-self:center;color:var(--gold);font-size:1.3em">→</div>
+        <div class="frise-item"><div class="fi-emoji">🏰</div><div class="fi-date">987</div><div class="fi-label">Hugues Capet</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="page-cours" class="page">
+  <div class="cours-container">
+    <div class="section-title">📖 Le Cours — Les Rois Francs</div>
+    <div class="chapter" id="ch1">
+      <div class="chapter-header" onclick="toggleChapter('ch1')">
+        <div class="chapter-icon">👑</div>
+        <div class="chapter-header-text"><h2>Chapitre 1 — Les Mérovingiens</h2><p>De Clovis aux "rois fainéants" (481–751)</p></div>
+        <div class="chapter-arrow">▼</div>
+      </div>
+      <div class="chapter-body">
+        <p>À la fin du V<sup>e</sup> siècle, un jeune chef franc très courageux unifie tous les peuples francs de la Gaule. Son nom : <span class="key-word">Clovis</span> ! C'est lui qui fonde la première grande dynastie royale, appelée les <span class="key-word">Mérovingiens</span>.</p>
+        <div class="person-card">
+          <div class="person-emoji">👑</div>
+          <div class="person-info">
+            <div class="king-badge">Roi Mérovingien</div>
+            <h4>Clovis Ier (481 – 511)</h4>
+            <p>Premier grand roi franc ! En <strong>496</strong>, il se fait baptiser à <strong>Reims</strong> et devient chrétien. Toute la France devient chrétienne ! Il conquiert une grande partie de la Gaule et crée les bases de ce qui deviendra la France 🇫🇷</p>
+          </div>
+        </div>
+        <div class="person-card">
+          <div class="person-emoji">🎵</div>
+          <div class="person-info">
+            <div class="king-badge">Roi Mérovingien</div>
+            <h4>Dagobert Ier (629 – 639)</h4>
+            <p>Tu connais la chanson "Le Bon Roi Dagobert" ? C'est lui ! 🎶 Dernier grand roi mérovingien puissant. Il est le premier roi enterré à la <strong>basilique Saint-Denis</strong> près de Paris — une tradition qui durera 1 000 ans !</p>
+          </div>
+        </div>
+        <div class="fact-box">
+          <div class="fact-title">🤔 Pourquoi "Mérovingiens" ?</div>
+          <p>Leur nom vient de <strong>Mérovée</strong>, le grand-père de Clovis. Tous les descendants de cette famille s'appellent les Mérovingiens !</p>
+        </div>
+        <p>Après Dagobert, les rois Mérovingiens deviennent faibles. On les appelle les <span class="key-word">rois fainéants</span> ("fainéant" = paresseux 😴). Ce sont leurs conseillers, les <span class="key-word">maires du palais</span>, qui prennent vraiment les décisions !</p>
+        <div class="memo-banner">
+          <h3>✅ À retenir sur les Mérovingiens</h3>
+          <div class="memo-items">
+            <div class="memo-item">👑 Fondés par Clovis en 481</div>
+            <div class="memo-item">⛪ Baptême de Clovis en 496 à Reims</div>
+            <div class="memo-item">🎵 Dagobert = dernier grand roi</div>
+            <div class="memo-item">😴 Les "rois fainéants"</div>
+            <div class="memo-item">📅 Fin en 751</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="chapter" id="ch2">
+      <div class="chapter-header" onclick="toggleChapter('ch2')">
+        <div class="chapter-icon">⚔️</div>
+        <div class="chapter-header-text"><h2>Chapitre 2 — La Transition</h2><p>Charles Martel et Pépin le Bref (700–768)</p></div>
+        <div class="chapter-arrow">▼</div>
+      </div>
+      <div class="chapter-body">
+        <div class="person-card">
+          <div class="person-emoji">🛡️</div>
+          <div class="person-info">
+            <div class="king-badge">Maire du Palais → Héros !</div>
+            <h4>Charles Martel (688 – 741)</h4>
+            <p>En <strong>732</strong>, il remporte la célèbre <strong>Bataille de Poitiers</strong> contre les armées arabes qui voulaient envahir la France 🌙. Son surnom "Martel" signifie "le Marteau" ⚒️. Il est le grand-père de Charlemagne !</p>
+          </div>
+        </div>
+        <div class="person-card">
+          <div class="person-emoji">🔑</div>
+          <div class="person-info">
+            <div class="king-badge">1er roi Carolingien</div>
+            <h4>Pépin le Bref (751 – 768)</h4>
+            <p>Fils de Charles Martel, il renvoie le dernier roi mérovingien en <strong>751</strong> et devient roi des Francs ! Son surnom "le Bref" vient de sa petite taille 🐢. Il est le père de Charlemagne !</p>
+          </div>
+        </div>
+        <div class="fact-box">
+          <div class="fact-title">🤔 Pourquoi "Carolingien" ?</div>
+          <p>Du latin <strong>"Carolus"</strong> = <strong>Charles</strong> ! La famille doit son nom à Charles Martel et Charlemagne (= Carolus Magnus = Charles le Grand).</p>
+        </div>
+      </div>
+    </div>
+    <div class="chapter" id="ch3">
+      <div class="chapter-header" onclick="toggleChapter('ch3')">
+        <div class="chapter-icon">🌟</div>
+        <div class="chapter-header-text"><h2>Chapitre 3 — Charlemagne, l'Empereur</h2><p>Le plus grand roi carolingien (768–814)</p></div>
+        <div class="chapter-arrow">▼</div>
+      </div>
+      <div class="chapter-body">
+        <div class="person-card">
+          <div class="person-emoji">🌟</div>
+          <div class="person-info">
+            <div class="king-badge">Roi des Francs + Empereur</div>
+            <h4>Charlemagne (768 – 814)</h4>
+            <p>Son vrai prénom est <strong>Charles</strong> ! "Charlemagne" vient du latin <em>Carolus Magnus</em> = "Charles le Grand". Le <strong>25 décembre 800</strong>, le pape le couronne <strong>Empereur d'Occident</strong> à Rome ! Il meurt en 814 à Aix-la-Chapelle.</p>
+          </div>
+        </div>
+        <div class="fact-box">
+          <div class="fact-title">🏫 Charlemagne et l'école</div>
+          <p>Charlemagne adore apprendre ! Il développe les écoles dans tout son empire pour que tous les enfants puissent apprendre à lire et à écrire 📚. On dit souvent qu'il "a inventé l'école" !</p>
+        </div>
+        <div class="fact-box">
+          <div class="fact-title">⚜️ Comment gouvernait-il ?</div>
+          <p>Il nommait des <strong>comtes</strong> pour diriger les régions. Pour les contrôler, il envoyait des inspecteurs appelés les <strong>missi dominici</strong> ("envoyés du maître" en latin) 🕵️</p>
+        </div>
+        <div class="memo-banner">
+          <h3>✅ À retenir sur Charlemagne</h3>
+          <div class="memo-items">
+            <div class="memo-item">👑 Roi des Francs en 768</div>
+            <div class="memo-item">🌟 Couronné Empereur en 800</div>
+            <div class="memo-item">🏛️ Capitale : Aix-la-Chapelle</div>
+            <div class="memo-item">🏫 Développe les écoles</div>
+            <div class="memo-item">💀 Mort en 814</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="chapter" id="ch4">
+      <div class="chapter-header" onclick="toggleChapter('ch4')">
+        <div class="chapter-icon">📜</div>
+        <div class="chapter-header-text"><h2>Chapitre 4 — La Fin des Carolingiens</h2><p>Le partage et la chute (814–987)</p></div>
+        <div class="chapter-arrow">▼</div>
+      </div>
+      <div class="chapter-body">
+        <div class="fact-box">
+          <div class="fact-title">📜 Le Traité de Verdun (843)</div>
+          <p>En <strong>843</strong>, les trois petits-fils de Charlemagne signent le <strong>Traité de Verdun</strong> et partagent l'empire en trois :<br>🇫🇷 <strong>Charles le Chauve</strong> → La Francie Occidentale (future France !)<br>🇩🇪 <strong>Louis le Germanique</strong> → La Francie Orientale (future Allemagne !)<br>🏴 <strong>Lothaire</strong> → La partie du milieu</p>
+        </div>
+        <p>Les <span class="key-word">Vikings</span> ⚓ pillent les côtes, les rois s'affaiblissent... En <strong>987</strong>, les grands seigneurs choisissent un nouveau roi : <span class="key-word">Hugues Capet</span>. C'est la fin des Carolingiens !</p>
+        <div class="memo-banner">
+          <h3>✅ À retenir sur la fin</h3>
+          <div class="memo-items">
+            <div class="memo-item">📜 Traité de Verdun en 843</div>
+            <div class="memo-item">🇫🇷 Naissance de la France !</div>
+            <div class="memo-item">⚓ Les Vikings pillent</div>
+            <div class="memo-item">🏰 Hugues Capet en 987</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="chapter" id="ch5">
+      <div class="chapter-header" onclick="toggleChapter('ch5')">
+        <div class="chapter-icon">📚</div>
+        <div class="chapter-header-text"><h2>📚 Les Mots Importants</h2><p>Le vocabulaire à bien connaître</p></div>
+        <div class="chapter-arrow">▼</div>
+      </div>
+      <div class="chapter-body">
+        <div class="vocab-grid">
+          <div class="vocab-item"><div class="word">👑 Dynastie</div><div class="def">Famille de rois qui se succèdent de père en fils.</div></div>
+          <div class="vocab-item"><div class="word">⛪ Baptême</div><div class="def">Cérémonie religieuse pour devenir chrétien.</div></div>
+          <div class="vocab-item"><div class="word">🌟 Sacre</div><div class="def">Cérémonie officielle pour couronner un roi ou un empereur.</div></div>
+          <div class="vocab-item"><div class="word">🏛️ Maire du palais</div><div class="def">Conseiller très puissant qui gérait l'empire à la place du roi.</div></div>
+          <div class="vocab-item"><div class="word">😴 Roi fainéant</div><div class="def">Roi mérovingien sans vrai pouvoir, qui n'agissait pas.</div></div>
+          <div class="vocab-item"><div class="word">🗺️ Empire</div><div class="def">Très grand territoire gouverné par un seul chef appelé Empereur.</div></div>
+          <div class="vocab-item"><div class="word">📋 Missi dominici</div><div class="def">Inspecteurs envoyés par Charlemagne pour surveiller les comtes.</div></div>
+          <div class="vocab-item"><div class="word">⚓ Vikings</div><div class="def">Guerriers marins venus du Nord qui pillaient les côtes d'Europe.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="page-quiz" class="page">
+  <div class="quiz-container">
+    <div class="section-title">🎯 Le Grand Quiz des Rois Francs !</div>
+    <div id="quiz-intro" class="quiz-intro">
+      <h2>🏆 Prêt(e) pour le quiz ?</h2>
+      <p>Réponds à <strong>10 questions</strong> sur les Mérovingiens et les Carolingiens. Choisis ta difficulté et en avant ! 🌟</p>
+      <div class="difficulty-btns">
+        <button class="diff-btn easy selected" onclick="selectDiff('easy',this)">🌱 Facile</button>
+        <button class="diff-btn medium" onclick="selectDiff('medium',this)">⚔️ Moyen</button>
+        <button class="diff-btn hard" onclick="selectDiff('hard',this)">🔥 Difficile</button>
+      </div>
+      <button class="start-quiz-btn" onclick="startQuiz()">🎮 Commencer le Quiz !</button>
+    </div>
+    <div id="quiz-game">
+      <div class="quiz-progress">
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
+        <div class="progress-text" id="progress-text">1 / 10</div>
+        <div class="score-badge">⭐ <span id="score-display">0</span></div>
+      </div>
+      <div class="question-card">
+        <div class="q-number" id="q-number">Question 1</div>
+        <div class="q-emoji" id="q-emoji">❓</div>
+        <div class="q-text" id="q-text"></div>
+        <div class="options-grid" id="options-grid"></div>
+        <div class="feedback-box" id="feedback-box"></div>
+        <button class="next-btn" id="next-btn" onclick="nextQuestion()">➡️ Question suivante</button>
+      </div>
+    </div>
+    <div id="quiz-results">
+      <div class="results-card">
+        <div class="results-emoji" id="results-emoji">🏆</div>
+        <div class="results-title" id="results-title">Bravo !</div>
+        <div class="results-score" id="results-score">10/10</div>
+        <div class="stars-display" id="stars-display">⭐⭐⭐</div>
+        <div class="results-msg" id="results-msg"></div>
+        <div>
+          <button class="retry-btn" onclick="resetQuiz()">🔄 Rejouer !</button>
+          <button class="home-btn" onclick="showPage('cours')">📖 Revoir le Cours</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="confetti-container" id="confetti-container"></div>
+<footer>🏰 Révise les Mérovingiens et les Carolingiens — CM1 · Fait pour les futurs champions d'Histoire ! 👑</footer>
+
+<script>
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  const pages=['home','cours','quiz'];
+  document.querySelectorAll('.nav-btn').forEach((b,i)=>b.classList.toggle('active',pages[i]===id));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function toggleChapter(id){document.getElementById(id).classList.toggle('open');}
+const allQ={
+  easy:[
+    {e:"👑",q:"Qui est le premier grand roi des Francs ?",o:["Charlemagne","Clovis","Dagobert","Pépin le Bref"],a:1,fc:"🎉 Bravo ! Clovis est le premier roi mérovingien, il règne à partir de 481.",fw:"La bonne réponse est Clovis ! C'est lui le fondateur des Mérovingiens."},
+    {e:"⛪",q:"Dans quelle ville Clovis se fait-il baptiser ?",o:["Paris","Lyon","Reims","Aix-la-Chapelle"],a:2,fc:"Super ! Clovis se fait baptiser à Reims en 496.",fw:"C'est à Reims que Clovis se fait baptiser en 496 !"},
+    {e:"🌟",q:"Comment s'appelle le plus grand roi carolingien ?",o:["Louis XIV","Charlemagne","Napoléon","François Ier"],a:1,fc:"Excellent ! Charlemagne = Carolus Magnus = Charles le Grand !",fw:"C'est Charlemagne ! Son nom signifie 'Charles le Grand' en latin."},
+    {e:"📅",q:"En quelle année Charlemagne est-il couronné Empereur ?",o:["500","700","800","900"],a:2,fc:"Parfait ! Le 25 décembre 800, Charlemagne est couronné Empereur d'Occident à Rome !",fw:"C'est en 800 ! Le 25 décembre 800, Charlemagne est couronné à Rome."},
+    {e:"🎵",q:"Comment s'appelle le roi mérovingien de la célèbre chanson ?",o:["Clovis","Charlemagne","Dagobert","Pépin"],a:2,fc:"Bravo ! 'Le Bon Roi Dagobert' ! C'est le dernier grand roi mérovingien puissant.",fw:"C'est Dagobert ! Tu connais sûrement la chanson 'Le Bon Roi Dagobert' !"},
+    {e:"😴",q:"Comment appelle-t-on les rois mérovingiens sans pouvoir réel ?",o:["Les rois guerriers","Les rois fainéants","Les rois savants","Les rois voyageurs"],a:1,fc:"Super ! Les 'rois fainéants' = des rois qui ne gouvernaient pas vraiment !",fw:"On les appelle les 'rois fainéants' ! Fainéant veut dire paresseux."},
+    {e:"⚔️",q:"Qui remporte la bataille de Poitiers en 732 ?",o:["Clovis","Charlemagne","Charles Martel","Pépin le Bref"],a:2,fc:"Excellent ! Charles Martel repousse les armées arabes à Poitiers. 'Martel' = 'marteau' !",fw:"C'est Charles Martel ! Il stoppe les armées arabes en 732 à Poitiers."},
+    {e:"🏛️",q:"Quelle est la capitale de l'empire de Charlemagne ?",o:["Paris","Rome","Aix-la-Chapelle","Reims"],a:2,fc:"Bien joué ! Aix-la-Chapelle est aujourd'hui une ville d'Allemagne.",fw:"C'est Aix-la-Chapelle ! Elle est en Allemagne aujourd'hui."},
+    {e:"📜",q:"Quelle famille de rois succède aux Mérovingiens ?",o:["Les Capétiens","Les Carolingiens","Les Vikings","Les Romains"],a:1,fc:"Bravo ! Les Carolingiens remplacent les Mérovingiens à partir de 751.",fw:"Ce sont les Carolingiens ! Ils commencent avec Pépin le Bref en 751."},
+    {e:"🏰",q:"Qui est choisi comme roi en 987, après les Carolingiens ?",o:["Charlemagne","Clovis","Hugues Capet","Louis XIV"],a:2,fc:"Excellent ! Hugues Capet est choisi comme roi en 987 !",fw:"C'est Hugues Capet ! Il devient roi en 987 et fonde les Capétiens."}
+  ],
+  medium:[
+    {e:"🔑",q:"Quel rôle avait Pépin le Bref avant de devenir roi ?",o:["Un général romain","Un moine","Le maire du palais","Un comte"],a:2,fc:"Parfait ! Pépin le Bref était maire du palais, comme son père Charles Martel.",fw:"Pépin le Bref était le maire du palais avant de prendre le trône."},
+    {e:"📅",q:"En quelle année Pépin le Bref fonde-t-il la dynastie carolingienne ?",o:["481","632","751","843"],a:2,fc:"Bravo ! En 751, Pépin le Bref renvoie le dernier roi mérovingien.",fw:"C'est en 751 ! Pépin le Bref devient roi des Francs."},
+    {e:"👨‍👦",q:"Quel est le lien entre Charles Martel et Charlemagne ?",o:["Père / Fils","Grand-père / Petit-fils","Frère / Frère","Oncle / Neveu"],a:1,fc:"Super ! Charles Martel est le grand-père de Charlemagne !",fw:"Charles Martel est le grand-père de Charlemagne (Pépin le Bref est le père)."},
+    {e:"⚜️",q:"Que signifie 'Carolus Magnus' ?",o:["Charles le Sage","Charles le Grand","Charles le Fort","Charles le Courageux"],a:1,fc:"Excellent ! 'Carolus Magnus' = Charles le Grand. C'est de là que vient 'Charlemagne' !",fw:"'Carolus Magnus' veut dire 'Charles le Grand' !"},
+    {e:"📜",q:"En quelle année est signé le Traité de Verdun ?",o:["800","814","843","987"],a:2,fc:"Très bien ! En 843, les petits-fils de Charlemagne signent le Traité de Verdun.",fw:"C'est en 843 ! Le Traité de Verdun divise l'empire en trois parties."},
+    {e:"🇫🇷",q:"Quel petit-fils de Charlemagne hérite de la future France ?",o:["Louis le Germanique","Lothaire","Charles le Chauve","Louis le Pieux"],a:2,fc:"Bravo ! Charles le Chauve reçoit la Francie Occidentale, qui deviendra la France.",fw:"C'est Charles le Chauve qui reçoit la Francie Occidentale, future France !"},
+    {e:"🕵️",q:"Comment s'appellent les inspecteurs de Charlemagne ?",o:["Les comtes palatins","Les missi dominici","Les maires du palais","Les chevaliers francs"],a:1,fc:"Excellent ! Les 'missi dominici' = 'envoyés du maître' en latin.",fw:"Ce sont les 'missi dominici' — les envoyés du maître en latin !"},
+    {e:"⚓",q:"Quel peuple pillait les côtes de l'empire carolingien ?",o:["Les Romains","Les Arabes","Les Vikings","Les Gaulois"],a:2,fc:"Super ! Les Vikings faisaient des raids en bateau et pillaient les côtes.",fw:"Ce sont les Vikings ! Ces guerriers venaient du Nord et pillaient les côtes."},
+    {e:"🏫",q:"Que fit Charlemagne pour l'éducation ?",o:["Il interdit les écoles","Il développa les écoles pour tous","Il créa les universités","Il détestait l'école"],a:1,fc:"Parfait ! Charlemagne fit développer les écoles dans tout son empire !",fw:"Charlemagne développa les écoles pour que tous puissent apprendre à lire et écrire !"},
+    {e:"🗓️",q:"Quel jour exact Charlemagne est-il couronné à Rome ?",o:["1er janvier 800","25 décembre 800","14 juillet 800","25 décembre 814"],a:1,fc:"Excellent ! Le 25 décembre 800 (jour de Noël !), le pape couronne Charlemagne.",fw:"C'est le 25 décembre 800 (Noël !) que Charlemagne est couronné Empereur à Rome."}
+  ],
+  hard:[
+    {e:"🧬",q:"De quel ancêtre vient le nom 'Mérovingien' ?",o:["Mérovée, grand-père de Clovis","Mérovée, père de Clovis","Mérovée, fils de Clovis","Un roi romain"],a:0,fc:"Parfait ! Les Mérovingiens tirent leur nom de Mérovée, grand-père de Clovis.",fw:"Le nom 'Mérovingien' vient de Mérovée, le grand-père de Clovis !"},
+    {e:"📅",q:"En quelle année Clovis se fait-il baptiser à Reims ?",o:["481","496","511","632"],a:1,fc:"Excellent ! Le baptême de Clovis date de 496 !",fw:"Clovis se fait baptiser en 496. Il commence à régner en 481 et meurt en 511."},
+    {e:"⚔️",q:"Quel peuple Charles Martel repousse-t-il à Poitiers en 732 ?",o:["Les Ostrogoths","Les Burgondes","Les armées arabes / musulmanes","Les Saxons"],a:2,fc:"Très bien ! Charles Martel stoppe l'avancée des armées arabes à Poitiers !",fw:"Charles Martel repousse les armées arabes (musulmanes) à Poitiers en 732."},
+    {e:"🏛️",q:"Où Charlemagne est-il couronné Empereur ?",o:["À Aix-la-Chapelle","À Reims","À Paris","À Rome"],a:3,fc:"Bravo ! C'est à Rome, le 25 décembre 800, que le pape couronne Charlemagne.",fw:"Charlemagne est couronné à Rome (pas dans sa capitale Aix-la-Chapelle) !"},
+    {e:"🗓️",q:"En quelle année se termine la dynastie carolingienne ?",o:["843","900","987","1066"],a:2,fc:"Excellent ! En 987, Hugues Capet est choisi. Fin des Carolingiens, début des Capétiens !",fw:"La dynastie carolingienne se termine en 987, quand Hugues Capet devient roi !"},
+    {e:"🇩🇪",q:"Quel petit-fils de Charlemagne reçoit la Francie Orientale (future Allemagne) ?",o:["Charles le Chauve","Louis le Germanique","Lothaire","Louis le Pieux"],a:1,fc:"Parfait ! Louis le Germanique reçoit la Francie Orientale. Son surnom l'indique !",fw:"C'est Louis le Germanique qui reçoit la Francie Orientale, future Allemagne !"},
+    {e:"💼",q:"Que gérait le 'maire du palais' à la place du roi ?",o:["L'armée, les impôts et les décisions importantes","La cuisine royale","L'enseignement des enfants","La construction des châteaux"],a:0,fc:"Excellent ! Le maire du palais gérait vraiment l'empire — armée, impôts, décisions.",fw:"Le maire du palais gérait l'armée, les impôts et les décisions à la place du roi !"},
+    {e:"⛪",q:"Quel est le premier roi mérovingien enterré à la basilique Saint-Denis ?",o:["Clovis","Mérovée","Dagobert Ier","Childéric Ier"],a:2,fc:"Bravo ! Dagobert Ier est le premier roi enterré à Saint-Denis !",fw:"C'est Dagobert Ier ! Il est le premier roi enterré à la basilique Saint-Denis."},
+    {e:"📜",q:"Quel est le dernier roi mérovingien déposé par Pépin le Bref ?",o:["Dagobert III","Thierry IV","Childéric III","Clotaire IV"],a:2,fc:"Parfait ! Childéric III est le dernier roi mérovingien, envoyé dans un monastère en 751.",fw:"Le dernier roi mérovingien est Childéric III, envoyé dans un monastère en 751."},
+    {e:"🗺️",q:"En quelle année naît la Francie Occidentale (future France) ?",o:["751","800","814","843"],a:3,fc:"Excellent ! Le Traité de Verdun en 843 crée la Francie Occidentale, future France !",fw:"C'est en 843 avec le Traité de Verdun que la Francie Occidentale (future France) naît !"}
+  ]
+};
+let diff='easy',questions=[],curQ=0,score=0;
+function selectDiff(d,btn){diff=d;document.querySelectorAll('.diff-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');}
+function shuffle(a){return a.slice().sort(()=>Math.random()-0.5);}
+function startQuiz(){
+  questions=shuffle(allQ[diff]).slice(0,10);curQ=0;score=0;
+  document.getElementById('quiz-intro').style.display='none';
+  document.getElementById('quiz-results').style.display='none';
+  document.getElementById('quiz-game').style.display='block';
+  document.getElementById('score-display').textContent='0';
+  renderQ();
+}
+function renderQ(){
+  const q=questions[curQ],total=questions.length;
+  document.getElementById('q-number').textContent='Question '+(curQ+1);
+  document.getElementById('q-emoji').textContent=q.e;
+  document.getElementById('q-text').textContent=q.q;
+  document.getElementById('progress-text').textContent=(curQ+1)+' / '+total;
+  document.getElementById('progress-fill').style.width=(curQ/total*100)+'%';
+  const letters=['A','B','C','D'],grid=document.getElementById('options-grid');
+  grid.innerHTML='';
+  q.o.forEach((opt,i)=>{
+    const btn=document.createElement('button');
+    btn.className='option-btn';
+    btn.innerHTML='<span class="option-letter">'+letters[i]+'</span>'+opt;
+    btn.onclick=()=>selectAnswer(i);
+    grid.appendChild(btn);
+  });
+  document.getElementById('feedback-box').style.display='none';
+  document.getElementById('next-btn').style.display='none';
+}
+function selectAnswer(idx){
+  const q=questions[curQ],btns=document.querySelectorAll('.option-btn');
+  btns.forEach(b=>b.disabled=true);
+  const fb=document.getElementById('feedback-box'),nb=document.getElementById('next-btn');
+  if(idx===q.a){score++;document.getElementById('score-display').textContent=score;btns[idx].classList.add('correct');fb.className='feedback-box correct-fb';fb.innerHTML='✅ '+q.fc;playSound('correct');}
+  else{btns[idx].classList.add('wrong');btns[q.a].classList.add('correct');fb.className='feedback-box wrong-fb';fb.innerHTML='❌ '+q.fw;playSound('wrong');}
+  fb.style.display='block';nb.style.display='block';
+  nb.textContent=curQ+1<questions.length?'➡️ Question suivante':'🏆 Voir mes résultats !';
+}
+function nextQuestion(){curQ++;if(curQ<questions.length)renderQ();else showResults();}
+function showResults(){
+  document.getElementById('quiz-game').style.display='none';
+  document.getElementById('quiz-results').style.display='block';
+  const pct=score/questions.length;
+  let emoji,title,msg,stars;
+  if(pct>=0.9){emoji='🏆';title='Champion(ne) !';stars='⭐⭐⭐';msg="WOW ! Tu es un(e) vrai(e) expert(e) des rois francs ! Charlemagne serait fier de toi ! 🌟";launchConfetti();}
+  else if(pct>=0.7){emoji='🥇';title='Très bien !';stars='⭐⭐';msg="Bravo, tu connais bien tes leçons ! Encore un peu de révision et tu seras champion(ne) !";}
+  else if(pct>=0.5){emoji='👍';title='Bien essayé !';stars='⭐';msg="Tu es sur la bonne voie ! Relis le cours et retente le quiz, tu vas t'améliorer !";}
+  else{emoji='📖';title="Continue d'apprendre !";stars='';msg="Pas de souci ! Va revoir le cours et reviens tenter ta chance. Tu vas y arriver ! 💪";}
+  document.getElementById('results-emoji').textContent=emoji;
+  document.getElementById('results-title').textContent=title;
+  document.getElementById('results-score').textContent=score+'/'+questions.length;
+  document.getElementById('stars-display').textContent=stars;
+  document.getElementById('results-msg').textContent=msg;
+}
+function resetQuiz(){document.getElementById('quiz-results').style.display='none';document.getElementById('quiz-intro').style.display='block';}
+function launchConfetti(){
+  const c=document.getElementById('confetti-container');c.innerHTML='';
+  const cols=['#f4c430','#c0392b','#2471a3','#1e8449','#7d3c98','#e67e22'];
+  for(let i=0;i<80;i++){const p=document.createElement('div');p.className='confetti-piece';p.style.left=Math.random()*100+'vw';p.style.background=cols[Math.floor(Math.random()*cols.length)];p.style.animationDuration=(1.5+Math.random()*2)+'s';p.style.animationDelay=Math.random()*1.5+'s';p.style.transform='rotate('+(Math.random()*360)+'deg)';c.appendChild(p);}
+  setTimeout(()=>c.innerHTML='',5000);
+}
+function playSound(type){
+  try{const ctx=new(window.AudioContext||window.webkitAudioContext)(),o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);
+  if(type==='correct'){o.frequency.setValueAtTime(523,ctx.currentTime);o.frequency.setValueAtTime(659,ctx.currentTime+0.1);o.frequency.setValueAtTime(784,ctx.currentTime+0.2);g.gain.setValueAtTime(0.2,ctx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.5);o.start(ctx.currentTime);o.stop(ctx.currentTime+0.5);}
+  else{o.frequency.setValueAtTime(300,ctx.currentTime);o.frequency.setValueAtTime(200,ctx.currentTime+0.1);g.gain.setValueAtTime(0.2,ctx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.3);o.start(ctx.currentTime);o.stop(ctx.currentTime+0.3);}
+  }catch(e){}}
+</script>
+</body>
+</html>
